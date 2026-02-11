@@ -1,5 +1,8 @@
 # compiled output
-/dist
+# NOTE: /dist is NOT ignored here so that Render.com includes
+# the build output in its deploy artifact.  The dist/ folder
+# is still generated (not committed) — add it only if you need
+# local git-ignore: use  git update-index --skip-worktree dist
 /node_modules
 /build
 pnpm-lock.yaml
