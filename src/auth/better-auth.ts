@@ -147,4 +147,12 @@ export const auth = betterAuth({
     }),
   ],
   trustedOrigins: [process.env.FRONTEND_URL || 'http://localhost:3001'],
+  advanced: {
+    // Required for cross-origin: frontend and backend on different Render URLs.
+    // Browser only sends cookies on cross-origin requests when SameSite=None; Secure.
+    defaultCookieAttributes: {
+      sameSite: 'none',
+      secure: true,
+    },
+  },
 });
