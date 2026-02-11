@@ -21,4 +21,5 @@ if (fs.existsSync(distPath)) {
   process.exit(1);
 }
 
-require("./dist/main");
+// Nest compiled src/main.ts → dist/src/main.js (rootDir is project root)
+require("./dist/src/main");
