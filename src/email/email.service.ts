@@ -6,15 +6,27 @@ export class EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
+    // Resend SMTP configuration (https://resend.com/docs/send-with-smtp)
+    const port = parseInt(process.env.SMTP_PORT || '465');
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_PORT === '465', // true for 465, false for other ports
+      host: process.env.SMTP_HOST || 'smtp.resend.com',
+      port: port,
+      secure: port === 465, // true for 465, false for other ports (like 587/STARTTLS)
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.SMTP_USER || 'resend',
+        pass: process.env.SMTP_PASS, // Your Resend API key (re_xxxxxxxxx)
       },
     });
+  }
+
+  /** From address for onboarding & invitation emails (e.g. noreply@yourdomain.com) */
+  private get fromOnboarding(): string {
+    return process.env.SMTP_FROM || 'onboarding@resend.dev';
+  }
+
+  /** From address for supplier-facing PO & RFQ emails (e.g. procurement@yourdomain.com) */
+  private get fromProcurement(): string {
+    return process.env.SMTP_FROM_PROCUREMENT || process.env.SMTP_FROM || 'onboarding@resend.dev';
   }
 
   async sendOrganizationInvitation(data: {
@@ -26,7 +38,7 @@ export class EmailService {
   }) {
     try {
       await this.transporter.sendMail({
-        from: process.env.SMTP_FROM,
+        from: this.fromOnboarding,
         to: data.email,
         subject: `You've been invited to join ${data.organizationName}`,
         html: `
@@ -61,7 +73,7 @@ export class EmailService {
   }) {
     try {
       await this.transporter.sendMail({
-        from: process.env.SMTP_FROM,
+        from: this.fromProcurement,
         to: data.supplierEmail,
         subject: `OFFICIAL PURCHASE ORDER: #${data.poId.substring(0, 8)} from ${data.organizationName}`,
         html: `
@@ -73,7 +85,7 @@ export class EmailService {
 
             <p>Hello <strong>${data.supplierName}</strong>,</p>
             <p>Please find the official purchase order from <strong>${data.organizationName}</strong> below. This order is authorized and ready for fulfillment.</p>
-            
+
             <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
@@ -87,16 +99,15 @@ export class EmailService {
                 </table>
             </div>
 
-            ${
-              data.notes
-                ? `
+            ${data.notes
+            ? `
             <div style="margin: 20px 0;">
                 <h4 style="margin: 0 0 8px 0; font-size: 12px; text-transform: uppercase; color: #64748b;">Special Instructions:</h4>
                 <p style="margin: 0; padding: 12px; background-color: #fffbeb; border-left: 4px solid #f59e0b; font-size: 14px; color: #92400e; font-style: italic;">${data.notes}</p>
             </div>
             `
-                : ''
-            }
+            : ''
+          }
 
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
                 <p style="font-size: 14px; color: #4b5563;">Please log in to the Ariba Supplier Portal or reply to this email to acknowledge receipt of this order.</p>
@@ -143,7 +154,7 @@ export class EmailService {
         : '';
 
       await this.transporter.sendMail({
-        from: process.env.SMTP_FROM,
+        from: this.fromProcurement,
         to: data.supplierEmail,
         subject: `New RFQ: ${data.rfqTitle} from ${data.organizationName}`,
         html: `
@@ -151,7 +162,7 @@ export class EmailService {
             <h2 style="color: #333 text-align: center;">New Request for Quote</h2>
             <p>Hello ${data.supplierName},</p>
             <p><strong>${data.organizationName}</strong> has sent you a new Request for Quote.</p>
-            
+
             <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; border: 1px solid #eee;">
                 <h3 style="margin-top: 0; color: #2c3e50;">RFQ Overview</h3>
                 <ul style="list-style-type: none; padding-left: 0;">

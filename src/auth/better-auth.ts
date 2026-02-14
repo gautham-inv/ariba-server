@@ -87,25 +87,24 @@ export const auth = betterAuth({
     },
     session: {
       create: {
-        after: async (session) => {
+        before: async (session) => {
           try {
             // Auto-set activeOrganizationId to the default org on session creation
             const defaultOrg = await prisma.organization.findFirst({
               where: { slug: DEFAULT_ORG_SLUG },
             });
 
-            if (defaultOrg && !session.activeOrganizationId) {
-              await prisma.session.update({
-                where: { id: session.id },
-                data: { activeOrganizationId: defaultOrg.id },
-              });
-              console.log(
-                `[Auth] Auto-set activeOrganizationId for session ${session.id}`,
-              );
+            if (defaultOrg) {
+              return {
+                data: {
+                  ...session,
+                  activeOrganizationId: defaultOrg.id,
+                },
+              };
             }
           } catch (error) {
             console.error(
-              '[Auth] Failed to auto-set activeOrganizationId:',
+              '[Auth] Failed to auto-set activeOrganizationId in before hook:',
               error,
             );
           }
