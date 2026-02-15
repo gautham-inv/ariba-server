@@ -1,22 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+
+interface SendMailOptions {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+}
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+  private resendApiKey: string | undefined;
 
   constructor() {
-    // Resend SMTP configuration (https://resend.com/docs/send-with-smtp)
-    const port = parseInt(process.env.SMTP_PORT || '465');
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.resend.com',
-      port: port,
-      secure: port === 465, // true for 465, false for other ports (like 587/STARTTLS)
-      auth: {
-        user: process.env.SMTP_USER || 'resend',
-        pass: process.env.SMTP_PASS, // Your Resend API key (re_xxxxxxxxx)
-      },
-    });
+    // Use SMTP_PASS as the Resend API key for the HTTP API
+    this.resendApiKey = process.env.SMTP_PASS;
   }
 
   /** From address for onboarding & invitation emails (e.g. noreply@yourdomain.com) */
@@ -29,6 +26,39 @@ export class EmailService {
     return process.env.SMTP_FROM_PROCUREMENT || process.env.SMTP_FROM || 'onboarding@resend.dev';
   }
 
+  /**
+   * Send email via Resend HTTP API (works on Render free tier).
+   * Render blocks outbound SMTP ports (25, 465, 587) on free services,
+   * so we use the REST API over HTTPS (port 443) instead.
+   */
+  private async sendMail(options: SendMailOptions): Promise<void> {
+    if (!this.resendApiKey) {
+      throw new Error('SMTP_PASS (Resend API key) is not configured');
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: options.from,
+        to: [options.to],
+        subject: options.subject,
+        html: options.html,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Resend API error (${response.status}): ${errorBody}`);
+    }
+
+    const result = await response.json();
+    console.log(`[Email] Sent successfully via Resend API. ID: ${result.id}`);
+  }
+
   async sendOrganizationInvitation(data: {
     email: string;
     inviterEmail: string;
@@ -37,7 +67,7 @@ export class EmailService {
     expiresAt: Date;
   }) {
     try {
-      await this.transporter.sendMail({
+      await this.sendMail({
         from: this.fromOnboarding,
         to: data.email,
         subject: `You've been invited to join ${data.organizationName}`,
@@ -72,7 +102,7 @@ export class EmailService {
     notes?: string;
   }) {
     try {
-      await this.transporter.sendMail({
+      await this.sendMail({
         from: this.fromProcurement,
         to: data.supplierEmail,
         subject: `OFFICIAL PURCHASE ORDER: #${data.poId.substring(0, 8)} from ${data.organizationName}`,
@@ -153,13 +183,13 @@ export class EmailService {
                    </div>`
         : '';
 
-      await this.transporter.sendMail({
+      await this.sendMail({
         from: this.fromProcurement,
         to: data.supplierEmail,
         subject: `New RFQ: ${data.rfqTitle} from ${data.organizationName}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
-            <h2 style="color: #333 text-align: center;">New Request for Quote</h2>
+            <h2 style="color: #333; text-align: center;">New Request for Quote</h2>
             <p>Hello ${data.supplierName},</p>
             <p><strong>${data.organizationName}</strong> has sent you a new Request for Quote.</p>
 
