@@ -20,7 +20,7 @@ export class OrganizationController {
   constructor(
     private readonly emailService: EmailService,
     private readonly prisma: PrismaService,
-  ) {}
+  ) { }
 
   @Get('notifications')
   async getNotifications(@CurrentUser('id') userId: string) {
@@ -36,6 +36,18 @@ export class OrganizationController {
     });
 
     return notifications;
+  }
+
+  @Post('notifications/read-all')
+  async markNotificationsRead(@CurrentUser('id') userId: string) {
+    if (!userId) return { success: false };
+
+    await this.prisma.notification.updateMany({
+      where: { userId, read: false },
+      data: { read: true },
+    });
+
+    return { success: true };
   }
 
   @Get('members')

@@ -14,7 +14,7 @@ export class ApprovalService {
     private prisma: PrismaService,
     private notificationService: NotificationService,
     private emailService: EmailService,
-  ) {}
+  ) { }
 
   // --- Rules Management ---
   async createRule(data: {
@@ -81,6 +81,15 @@ export class ApprovalService {
         status: 'PENDING',
       },
     });
+
+    // Notify approvers that a new request is waiting
+    await this.notificationService.notifyRole(
+      orgId,
+      'approver',
+      'New Approval Required',
+      `A new Purchase Order (${poId.substring(0, 8)}) requires your review.`,
+      'info',
+    );
 
     return { required: true };
   }
