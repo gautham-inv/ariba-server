@@ -1,13 +1,13 @@
 import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
-import { RequirePermissions } from '../auth/decorators/permissions.decorator';
-import { ActiveOrgId } from '../auth/decorators/active-org.decorator';
+import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
+import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
+import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
 
 @Controller('suppliers')
 @UseGuards(PermissionsGuard)
 export class SupplierController {
-  constructor(private readonly supplierService: SupplierService) {}
+  constructor(private readonly supplierService: SupplierService) { }
 
   @Post()
   @RequirePermissions({ supplier: ['create'] })

@@ -8,14 +8,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { PurchaseOrderService } from './purchase-order.service';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
-import { RequirePermissions } from '../auth/decorators/permissions.decorator';
-import { ActiveOrgId } from '../auth/decorators/active-org.decorator';
+import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
+import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
+import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
 
 @Controller('purchase-orders')
 @UseGuards(PermissionsGuard)
 export class PurchaseOrderController {
-  constructor(private readonly poService: PurchaseOrderService) {}
+  constructor(private readonly poService: PurchaseOrderService) { }
 
   @Post()
   @RequirePermissions({ purchaseOrder: ['create'] })

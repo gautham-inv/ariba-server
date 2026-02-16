@@ -8,14 +8,14 @@ import {
   Delete,
 } from '@nestjs/common';
 import { RFQService } from './rfq.service';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
-import { RequirePermissions } from '../auth/decorators/permissions.decorator';
-import { ActiveOrgId } from '../auth/decorators/active-org.decorator';
+import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
+import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
+import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
 
 @Controller('rfq')
 @UseGuards(PermissionsGuard)
 export class RFQController {
-  constructor(private readonly rfqService: RFQService) {}
+  constructor(private readonly rfqService: RFQService) { }
 
   @Post()
   @RequirePermissions({ rfq: ['create'] })

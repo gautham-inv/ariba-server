@@ -3,8 +3,8 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { EmailService } from '../email/email.service';
+import { PrismaService } from '../../core/prisma/prisma.service';
+import { EmailService } from '../../core/email/email.service';
 import { RFQStatus } from '@prisma/client';
 import { NotificationService } from '../notification/notification.service';
 
@@ -14,7 +14,7 @@ export class RFQService {
     private prisma: PrismaService,
     private emailService: EmailService,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 
   async createRFQ(data: {
     buyerOrgId: string;

@@ -8,17 +8,17 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApprovalService } from './approval.service';
-import { auth } from '../auth/better-auth'; // Adjust path if needed
+import { auth } from '../../core/auth/better-auth'; // Adjust path if needed
 import { Headers as HeadersDecorator } from '@nestjs/common';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
-import { RequirePermissions } from '../auth/decorators/permissions.decorator';
-import { ActiveOrgId } from '../auth/decorators/active-org.decorator';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
+import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
+import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
+import { CurrentUser } from '../../core/auth/decorators/current-user.decorator';
 
 @Controller('approvals')
 @UseGuards(PermissionsGuard)
 export class ApprovalController {
-  constructor(private readonly approvalService: ApprovalService) {}
+  constructor(private readonly approvalService: ApprovalService) { }
 
   @Post('rules')
   @RequirePermissions({ rule: ['manage'] })

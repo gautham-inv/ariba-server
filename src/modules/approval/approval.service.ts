@@ -3,10 +3,10 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../core/prisma/prisma.service';
 import { ApprovalStatus, POStatus } from '@prisma/client';
 import { NotificationService } from '../notification/notification.service';
-import { EmailService } from '../email/email.service';
+import { EmailService } from '../../core/email/email.service';
 
 @Injectable()
 export class ApprovalService {

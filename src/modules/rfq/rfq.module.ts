@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { RFQService } from './rfq.service';
 import { RFQController } from './rfq.controller';
-import { PrismaModule } from '../prisma/prisma.module';
-import { EmailModule } from '../email/email.module';
+import { PrismaModule } from '../../core/prisma/prisma.module';
+import { EmailModule } from '../../core/email/email.module';
 
 @Module({
   imports: [PrismaModule, EmailModule],
@@ -10,4 +10,4 @@ import { EmailModule } from '../email/email.module';
   controllers: [RFQController],
   exports: [RFQService],
 })
-export class RFQModule {}
+export class RFQModule { }

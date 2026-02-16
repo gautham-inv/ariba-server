@@ -8,12 +8,12 @@ import {
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
-import { EmailService } from '../email/email.service';
-import { PrismaService } from '../prisma/prisma.service';
-import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { ActiveOrgId } from '../auth/decorators/active-org.decorator';
-import { PermissionsGuard } from '../auth/guards/permissions.guard';
-import { RequirePermissions } from '../auth/decorators/permissions.decorator';
+import { EmailService } from '../../core/email/email.service';
+import { PrismaService } from '../../core/prisma/prisma.service';
+import { CurrentUser } from '../../core/auth/decorators/current-user.decorator';
+import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
+import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
+import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
 
 @Controller('organization')
 export class OrganizationController {
