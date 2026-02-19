@@ -8,7 +8,7 @@ export const statement = {
   purchaseOrder: ['create', 'read', 'send', 'delete'],
   approval: ['approve', 'read'],
   rule: ['manage', 'read'],
-  supplier: ['create', 'read', 'update'],
+  supplier: ['create', 'read', 'update', 'delete'],
   member: ['create', 'update', 'delete', 'read'],
 } as const;
 
@@ -23,7 +23,7 @@ export const owner = ac.newRole({
   purchaseOrder: ['create', 'read', 'send', 'delete'],
   approval: ['approve', 'read'],
   rule: ['manage', 'read'],
-  supplier: ['create', 'read', 'update'],
+  supplier: ['create', 'read', 'update', 'delete'],
 });
 
 export const admin = ac.newRole({
@@ -35,14 +35,14 @@ export const admin = ac.newRole({
   purchaseOrder: ['create', 'read', 'send', 'delete'],
   approval: ['approve', 'read'],
   rule: ['manage', 'read'],
-  supplier: ['create', 'read', 'update'],
+  supplier: ['create', 'read', 'update', 'delete'],
 });
 
 export const procurement = ac.newRole({
   rfq: ['create', 'send', 'read'],
   quote: ['record', 'confirm', 'read'],
   purchaseOrder: ['create', 'read'],
-  supplier: ['create', 'read', 'update'],
+  supplier: ['create', 'read', 'update', 'delete'],
 });
 
 export const approver = ac.newRole({

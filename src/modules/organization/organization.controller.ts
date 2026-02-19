@@ -7,6 +7,7 @@ import {
   Param,
   NotFoundException,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { EmailService } from '../../core/email/email.service';
 import { PrismaService } from '../../core/prisma/prisma.service';
@@ -96,5 +97,14 @@ export class OrganizationController {
       orgId: (invitation as any).organizationId,
       existingUser: !!user,
     };
+  }
+
+  @Delete('member/:id')
+  @UseGuards(PermissionsGuard)
+  @RequirePermissions({ member: ['delete'] })
+  async deleteMember(@Param('id') id: string) {
+    return this.prisma.member.delete({
+      where: { id },
+    });
   }
 }

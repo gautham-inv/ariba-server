@@ -11,6 +11,9 @@ import { RFQService } from './rfq.service';
 import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
 import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
 import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
+import { CreateRFQDto } from './dto/create-rfq.dto';
+import { CreateQuoteDto } from './dto/create-quote.dto';
+import { UpdateQuoteStatusDto } from './dto/update-quote-status.dto';
 
 @Controller('rfq')
 @UseGuards(PermissionsGuard)
@@ -19,7 +22,7 @@ export class RFQController {
 
   @Post()
   @RequirePermissions({ rfq: ['create'] })
-  async createRFQ(@ActiveOrgId() orgId: string, @Body() body: any) {
+  async createRFQ(@ActiveOrgId() orgId: string, @Body() body: CreateRFQDto) {
     return this.rfqService.createRFQ({
       ...body,
       buyerOrgId: orgId,
@@ -48,7 +51,7 @@ export class RFQController {
   @RequirePermissions({ quote: ['record'] })
   async createQuote(
     @Param('id') id: string,
-    @Body() body: { supplierId: string; totalAmount: number; notes?: string },
+    @Body() body: CreateQuoteDto,
   ) {
     return this.rfqService.createQuote({
       rfqId: id,
@@ -60,8 +63,7 @@ export class RFQController {
   @RequirePermissions({ quote: ['confirm'] })
   async updateQuoteStatus(
     @Param('id') id: string,
-    @Body()
-    body: { status: 'RECEIVED' | 'CONFIRMED' | 'ACCEPTED' | 'REJECTED' },
+    @Body() body: UpdateQuoteStatusDto,
   ) {
     return this.rfqService.updateQuoteStatus(id, body.status);
   }

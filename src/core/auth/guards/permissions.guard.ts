@@ -10,10 +10,12 @@ import {
   PermissionRequirement,
 } from '../decorators/permissions.decorator';
 import { auth } from '../better-auth';
+import { AuthenticatedRequest } from '../interfaces/auth-request.interface';
+import { AuthorizeResponse } from 'better-auth/plugins/access';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requirement = this.reflector.getAllAndOverride<PermissionRequirement>(
@@ -25,29 +27,35 @@ export class PermissionsGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
+    const sessionDetail = request.session;
+    const user = request.user;
 
-    // Check permission using better-auth API
+    if (!sessionDetail || !user) {
+      throw new ForbiddenException('No active session found');
+    }
+
+    // Check permission using better-auth API but with cached session if possible
+    // Note: better-auth 'hasPermission' might still need to check DB for roles
+    // but at least we don't fetch the session again.
     try {
-      const result = await auth.api.hasPermission({
-        headers: request.headers,
+      const result = await (auth.api.hasPermission({
+        headers: request.headers as any,
         body: {
           permissions: requirement as any,
         },
-      });
+      }) as Promise<AuthorizeResponse>);
 
       if (!result.success) {
-        const error = (result as any).error;
+        // Since AuthorizeResponse only has error: string on success: false
+        const errorMessage = (result as any).error || 'You do not have the required permissions for this action';
+
         console.warn(`[PermissionsGuard] Access Denied for ${request.url}:`, {
           requirement,
-          error: error?.message || 'Unknown Error',
-          code: error?.code,
+          error: errorMessage,
         });
 
-        const message =
-          error?.message ||
-          'You do not have the required permissions for this action';
-        throw new ForbiddenException(message);
+        throw new ForbiddenException(errorMessage);
       }
 
       return true;

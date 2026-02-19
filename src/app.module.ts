@@ -1,4 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import helmet from 'helmet';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,9 +14,14 @@ import { PurchaseOrderModule } from './modules/purchase-order/purchase-order.mod
 import { ApprovalModule } from './modules/approval/approval.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { AuthMiddleware } from './core/auth/middleware/auth.middleware';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes ConfigService available everywhere
+    }),
     PrismaModule,
     EmailModule,
     RFQModule,
@@ -25,16 +32,18 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
     NotificationModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(helmet(), LoggerMiddleware)
-      .exclude(
-      // Add routes you want to exclude here, for example:
-      // { path: 'health', method: RequestMethod.GET },
-    )
+      .apply(helmet(), LoggerMiddleware, AuthMiddleware)
       .forRoutes('*'); // Apply to all routes
   }
 }

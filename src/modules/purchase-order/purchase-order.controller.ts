@@ -11,6 +11,7 @@ import { PurchaseOrderService } from './purchase-order.service';
 import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
 import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
 import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
+import { CreatePODto } from './dto/create-po.dto';
 
 @Controller('purchase-orders')
 @UseGuards(PermissionsGuard)
@@ -21,7 +22,7 @@ export class PurchaseOrderController {
   @RequirePermissions({ purchaseOrder: ['create'] })
   async createPO(
     @ActiveOrgId() orgId: string,
-    @Body() body: { quoteId: string; notes?: string },
+    @Body() body: CreatePODto,
   ) {
     return this.poService.createPO({
       ...body,

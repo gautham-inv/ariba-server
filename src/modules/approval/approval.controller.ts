@@ -14,6 +14,7 @@ import { PermissionsGuard } from '../../core/auth/guards/permissions.guard';
 import { RequirePermissions } from '../../core/auth/decorators/permissions.decorator';
 import { ActiveOrgId } from '../../core/auth/decorators/active-org.decorator';
 import { CurrentUser } from '../../core/auth/decorators/current-user.decorator';
+import { CreateRuleDto } from './dto/create-rule.dto';
 
 @Controller('approvals')
 @UseGuards(PermissionsGuard)
@@ -24,7 +25,7 @@ export class ApprovalController {
   @RequirePermissions({ rule: ['manage'] })
   async createRule(
     @ActiveOrgId() orgId: string,
-    @Body() body: { minAmount: number; role: string },
+    @Body() body: CreateRuleDto,
   ) {
     return this.approvalService.createRule({
       ...body,

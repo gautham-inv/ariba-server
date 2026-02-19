@@ -26,4 +26,10 @@ export class SupplierService {
       orderBy: { name: 'asc' },
     });
   }
+
+  async deleteSupplier(id: string) {
+    return this.prisma.supplier.delete({
+      where: { id },
+    });
+  }
 }
