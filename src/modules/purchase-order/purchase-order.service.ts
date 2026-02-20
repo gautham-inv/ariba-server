@@ -46,6 +46,7 @@ export class PurchaseOrderService {
           quoteId: quote.id,
           rfqId: quote.rfqId,
           totalAmount: quote.totalAmount,
+          currency: (quote as any).currency || 'USD',
           status: 'DRAFT',
           notes: data.notes,
         } as any,
@@ -60,9 +61,11 @@ export class PurchaseOrderService {
       // So we should probably modify `evaluatePORules` to accept `tx` OR manually implement logic here.
       // Let's manually implement the check here to use `tx`.
 
+      const poCurrency = (quote as any).currency || 'USD';
       const applicableRules = await tx.approvalRule.findMany({
         where: {
           buyerOrgId: data.buyerOrgId,
+          currency: poCurrency,
           minAmount: { lte: quote.totalAmount },
         },
       });
@@ -109,7 +112,7 @@ export class PurchaseOrderService {
         data.buyerOrgId,
         'approver',
         'New PO Pending Approval',
-        `A new Purchase Order for ${quote.supplier.name} (${quote.totalAmount}) requires your authorization.`,
+        `A new Purchase Order for ${quote.supplier.name} (${(quote as any).currency || 'USD'} ${quote.totalAmount.toLocaleString()}) requires your authorization.`,
         'info',
       );
     }

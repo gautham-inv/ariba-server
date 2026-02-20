@@ -37,13 +37,16 @@ let PurchaseOrderService = class PurchaseOrderService {
                     quoteId: quote.id,
                     rfqId: quote.rfqId,
                     totalAmount: quote.totalAmount,
+                    currency: quote.currency || 'USD',
                     status: 'DRAFT',
                     notes: data.notes,
                 },
             });
+            const poCurrency = quote.currency || 'USD';
             const applicableRules = await tx.approvalRule.findMany({
                 where: {
                     buyerOrgId: data.buyerOrgId,
+                    currency: poCurrency,
                     minAmount: { lte: quote.totalAmount },
                 },
             });
@@ -74,7 +77,7 @@ let PurchaseOrderService = class PurchaseOrderService {
             return finalPO;
         });
         if (result.status === 'PENDING_APPROVAL') {
-            await this.notificationService.notifyRole(data.buyerOrgId, 'approver', 'New PO Pending Approval', `A new Purchase Order for ${quote.supplier.name} (${quote.totalAmount}) requires your authorization.`, 'info');
+            await this.notificationService.notifyRole(data.buyerOrgId, 'approver', 'New PO Pending Approval', `A new Purchase Order for ${quote.supplier.name} (${quote.currency || 'USD'} ${quote.totalAmount.toLocaleString()}) requires your authorization.`, 'info');
         }
         return result;
     }

@@ -232,6 +232,7 @@ model Quote {
   supplierId  String
   buyerOrgId  String
   totalAmount Float
+  currency    String      @default("USD")
   notes       String?
   status      QuoteStatus
   submittedAt DateTime    @default(now())
@@ -262,6 +263,7 @@ model PurchaseOrder {
   rfqId       String?
   quoteId     String?  @unique
   totalAmount Float
+  currency    String   @default("USD")
   status      POStatus
   notes       String?
   createdAt   DateTime @default(now())
@@ -288,6 +290,7 @@ model ApprovalRule {
   id         String   @id @default(uuid())
   buyerOrgId String
   minAmount  Float
+  currency   String   @default("USD")
   role       String
   createdAt  DateTime @default(now())
 

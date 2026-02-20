@@ -5,129 +5,129 @@ export declare class PurchaseOrderController {
     constructor(poService: PurchaseOrderService);
     createPO(orgId: string, body: CreatePODto): Promise<{
         id: string;
-        createdAt: Date;
+        quoteId: string | null;
+        buyerOrgId: string;
+        supplierId: string;
+        rfqId: string | null;
+        totalAmount: number;
         status: import(".prisma/client").$Enums.POStatus;
         notes: string | null;
-        buyerOrgId: string;
-        rfqId: string | null;
-        supplierId: string;
-        totalAmount: number;
-        quoteId: string | null;
+        createdAt: Date;
     }>;
     getPOsByOrg(orgId: string): Promise<({
         supplier: {
             id: string;
-            name: string;
-            createdAt: Date;
-            email: string;
-            status: import(".prisma/client").$Enums.SupplierStatus;
             buyerOrgId: string;
+            status: import(".prisma/client").$Enums.SupplierStatus;
+            createdAt: Date;
+            name: string;
+            email: string;
         };
         quote: {
             id: string;
         };
     } & {
         id: string;
-        createdAt: Date;
+        quoteId: string | null;
+        buyerOrgId: string;
+        supplierId: string;
+        rfqId: string | null;
+        totalAmount: number;
         status: import(".prisma/client").$Enums.POStatus;
         notes: string | null;
-        buyerOrgId: string;
-        rfqId: string | null;
-        supplierId: string;
-        totalAmount: number;
-        quoteId: string | null;
+        createdAt: Date;
     })[]>;
     getPOById(id: string): Promise<{
-        files: {
-            id: string;
-            organizationId: string;
-            rfqId: string | null;
-            quoteId: string | null;
-            ownerType: import(".prisma/client").$Enums.FileOwnerType;
-            ownerId: string;
-            storageKey: string;
-            contentType: string;
-            uploadedAt: Date;
-            poId: string | null;
-        }[];
         supplier: {
             id: string;
-            name: string;
-            createdAt: Date;
-            email: string;
-            status: import(".prisma/client").$Enums.SupplierStatus;
             buyerOrgId: string;
+            status: import(".prisma/client").$Enums.SupplierStatus;
+            createdAt: Date;
+            name: string;
+            email: string;
         };
         quote: {
             rfq: {
                 items: {
                     id: string;
+                    rfqId: string;
                     name: string;
                     description: string | null;
                     quantity: number;
                     unit: string;
-                    rfqId: string;
                 }[];
             } & {
                 id: string;
-                createdAt: Date;
+                buyerOrgId: string;
                 status: import(".prisma/client").$Enums.RFQStatus;
+                notes: string | null;
+                createdAt: Date;
                 title: string;
                 dueDate: Date;
                 currency: string;
-                notes: string | null;
-                buyerOrgId: string;
             };
         } & {
             id: string;
+            buyerOrgId: string;
+            supplierId: string;
+            rfqId: string;
+            totalAmount: number;
             status: import(".prisma/client").$Enums.QuoteStatus;
             notes: string | null;
-            buyerOrgId: string;
-            rfqId: string;
-            supplierId: string;
-            totalAmount: number;
             submittedAt: Date;
         };
         buyerOrg: {
             id: string;
+            createdAt: Date;
             name: string;
             slug: string;
             logo: string | null;
             metadata: string | null;
-            createdAt: Date;
             updatedAt: Date;
         };
+        files: {
+            id: string;
+            quoteId: string | null;
+            rfqId: string | null;
+            ownerType: import(".prisma/client").$Enums.FileOwnerType;
+            ownerId: string;
+            organizationId: string;
+            storageKey: string;
+            contentType: string;
+            uploadedAt: Date;
+            poId: string | null;
+        }[];
     } & {
         id: string;
-        createdAt: Date;
+        quoteId: string | null;
+        buyerOrgId: string;
+        supplierId: string;
+        rfqId: string | null;
+        totalAmount: number;
         status: import(".prisma/client").$Enums.POStatus;
         notes: string | null;
-        buyerOrgId: string;
-        rfqId: string | null;
-        supplierId: string;
-        totalAmount: number;
-        quoteId: string | null;
+        createdAt: Date;
     }>;
     deletePO(id: string): Promise<{
         id: string;
-        createdAt: Date;
+        quoteId: string | null;
+        buyerOrgId: string;
+        supplierId: string;
+        rfqId: string | null;
+        totalAmount: number;
         status: import(".prisma/client").$Enums.POStatus;
         notes: string | null;
-        buyerOrgId: string;
-        rfqId: string | null;
-        supplierId: string;
-        totalAmount: number;
-        quoteId: string | null;
+        createdAt: Date;
     }>;
     sendPO(id: string): Promise<{
         id: string;
-        createdAt: Date;
+        quoteId: string | null;
+        buyerOrgId: string;
+        supplierId: string;
+        rfqId: string | null;
+        totalAmount: number;
         status: import(".prisma/client").$Enums.POStatus;
         notes: string | null;
-        buyerOrgId: string;
-        rfqId: string | null;
-        supplierId: string;
-        totalAmount: number;
-        quoteId: string | null;
+        createdAt: Date;
     }>;
 }

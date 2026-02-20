@@ -20,12 +20,14 @@ export class ApprovalService {
   async createRule(data: {
     buyerOrgId: string;
     minAmount: number;
+    currency: string;
     role: string;
   }) {
     return this.prisma.approvalRule.create({
       data: {
         buyerOrgId: data.buyerOrgId,
         minAmount: data.minAmount,
+        currency: data.currency,
         role: data.role,
       },
     });
@@ -38,11 +40,11 @@ export class ApprovalService {
   }
 
   // --- Evaluation Logic ---
-  async evaluatePORules(poId: string, totalAmount: number, orgId: string) {
-    // Find rules for this org that match criteria (amount >= minAmount)
+  async evaluatePORules(poId: string, totalAmount: number, orgId: string, currency = 'USD') {
     const applicableRules = await this.prisma.approvalRule.findMany({
       where: {
         buyerOrgId: orgId,
+        currency,
         minAmount: { lte: totalAmount },
       },
     });
@@ -161,7 +163,7 @@ export class ApprovalService {
           supplierName: po.supplier.name,
           poId: po.id,
           totalAmount: po.totalAmount,
-          currency: 'USD', // Ideally fetched from RFQ
+          currency: (po as any).currency || 'USD',
           organizationName: po.buyerOrg.name,
           notes: (po as any).notes || undefined,
         });

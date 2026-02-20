@@ -199,6 +199,7 @@ export class RFQService {
         supplierId: data.supplierId,
         buyerOrgId: rfq.buyerOrgId,
         totalAmount: data.totalAmount,
+        currency: rfq.currency,
         notes: data.notes,
         status: 'RECEIVED',
       } as any,

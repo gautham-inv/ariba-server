@@ -6,5 +6,9 @@ export class CreateRuleDto {
 
     @IsString()
     @IsNotEmpty()
+    currency: string;
+
+    @IsString()
+    @IsNotEmpty()
     role: string;
 }

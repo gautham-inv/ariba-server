@@ -6,21 +6,6 @@ export declare class RFQController {
     private readonly rfqService;
     constructor(rfqService: RFQService);
     createRFQ(orgId: string, body: CreateRFQDto): Promise<{
-        suppliers: ({
-            supplier: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                email: string;
-                status: import(".prisma/client").$Enums.SupplierStatus;
-                buyerOrgId: string;
-            };
-        } & {
-            id: string;
-            rfqId: string;
-            invitedAt: Date;
-            supplierId: string;
-        })[];
         items: {
             id: string;
             name: string;
@@ -29,14 +14,29 @@ export declare class RFQController {
             unit: string;
             rfqId: string;
         }[];
+        suppliers: ({
+            supplier: {
+                id: string;
+                status: import(".prisma/client").$Enums.SupplierStatus;
+                createdAt: Date;
+                buyerOrgId: string;
+                name: string;
+                email: string;
+            };
+        } & {
+            id: string;
+            rfqId: string;
+            invitedAt: Date;
+            supplierId: string;
+        })[];
     } & {
         id: string;
-        createdAt: Date;
-        status: import(".prisma/client").$Enums.RFQStatus;
         title: string;
         dueDate: Date;
         currency: string;
         notes: string | null;
+        status: import(".prisma/client").$Enums.RFQStatus;
+        createdAt: Date;
         buyerOrgId: string;
     }>;
     sendRFQ(id: string): Promise<{
@@ -48,11 +48,11 @@ export declare class RFQController {
         suppliers: ({
             supplier: {
                 id: string;
-                name: string;
-                createdAt: Date;
-                email: string;
                 status: import(".prisma/client").$Enums.SupplierStatus;
+                createdAt: Date;
                 buyerOrgId: string;
+                name: string;
+                email: string;
             };
         } & {
             id: string;
@@ -62,8 +62,8 @@ export declare class RFQController {
         })[];
         quotes: {
             id: string;
-            status: import(".prisma/client").$Enums.QuoteStatus;
             notes: string | null;
+            status: import(".prisma/client").$Enums.QuoteStatus;
             buyerOrgId: string;
             rfqId: string;
             supplierId: string;
@@ -72,68 +72,22 @@ export declare class RFQController {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        status: import(".prisma/client").$Enums.RFQStatus;
         title: string;
         dueDate: Date;
         currency: string;
         notes: string | null;
+        status: import(".prisma/client").$Enums.RFQStatus;
+        createdAt: Date;
         buyerOrgId: string;
     })[]>;
     getRFQ(id: string): Promise<{
-        suppliers: ({
-            supplier: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                email: string;
-                status: import(".prisma/client").$Enums.SupplierStatus;
-                buyerOrgId: string;
-            };
-        } & {
-            id: string;
-            rfqId: string;
-            invitedAt: Date;
-            supplierId: string;
-        })[];
-        quotes: ({
-            files: {
-                id: string;
-                organizationId: string;
-                rfqId: string | null;
-                quoteId: string | null;
-                ownerType: import(".prisma/client").$Enums.FileOwnerType;
-                ownerId: string;
-                storageKey: string;
-                contentType: string;
-                uploadedAt: Date;
-                poId: string | null;
-            }[];
-            supplier: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                email: string;
-                status: import(".prisma/client").$Enums.SupplierStatus;
-                buyerOrgId: string;
-            };
-        } & {
-            id: string;
-            status: import(".prisma/client").$Enums.QuoteStatus;
-            notes: string | null;
-            buyerOrgId: string;
-            rfqId: string;
-            supplierId: string;
-            totalAmount: number;
-            submittedAt: Date;
-        })[];
         buyerOrg: {
             id: string;
+            createdAt: Date;
             name: string;
             slug: string;
             logo: string | null;
             metadata: string | null;
-            createdAt: Date;
             updatedAt: Date;
         };
         items: {
@@ -144,21 +98,67 @@ export declare class RFQController {
             unit: string;
             rfqId: string;
         }[];
+        suppliers: ({
+            supplier: {
+                id: string;
+                status: import(".prisma/client").$Enums.SupplierStatus;
+                createdAt: Date;
+                buyerOrgId: string;
+                name: string;
+                email: string;
+            };
+        } & {
+            id: string;
+            rfqId: string;
+            invitedAt: Date;
+            supplierId: string;
+        })[];
+        quotes: ({
+            files: {
+                id: string;
+                rfqId: string | null;
+                ownerType: import(".prisma/client").$Enums.FileOwnerType;
+                ownerId: string;
+                organizationId: string;
+                storageKey: string;
+                contentType: string;
+                uploadedAt: Date;
+                quoteId: string | null;
+                poId: string | null;
+            }[];
+            supplier: {
+                id: string;
+                status: import(".prisma/client").$Enums.SupplierStatus;
+                createdAt: Date;
+                buyerOrgId: string;
+                name: string;
+                email: string;
+            };
+        } & {
+            id: string;
+            notes: string | null;
+            status: import(".prisma/client").$Enums.QuoteStatus;
+            buyerOrgId: string;
+            rfqId: string;
+            supplierId: string;
+            totalAmount: number;
+            submittedAt: Date;
+        })[];
     } & {
         id: string;
-        createdAt: Date;
-        status: import(".prisma/client").$Enums.RFQStatus;
         title: string;
         dueDate: Date;
         currency: string;
         notes: string | null;
+        status: import(".prisma/client").$Enums.RFQStatus;
+        createdAt: Date;
         buyerOrgId: string;
     }>;
     createQuote(id: string, body: CreateQuoteDto): Promise<any>;
     updateQuoteStatus(id: string, body: UpdateQuoteStatusDto): Promise<{
         id: string;
-        status: import(".prisma/client").$Enums.QuoteStatus;
         notes: string | null;
+        status: import(".prisma/client").$Enums.QuoteStatus;
         buyerOrgId: string;
         rfqId: string;
         supplierId: string;
@@ -167,12 +167,12 @@ export declare class RFQController {
     }>;
     deleteRFQ(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        status: import(".prisma/client").$Enums.RFQStatus;
         title: string;
         dueDate: Date;
         currency: string;
         notes: string | null;
+        status: import(".prisma/client").$Enums.RFQStatus;
+        createdAt: Date;
         buyerOrgId: string;
     }>;
 }

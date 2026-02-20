@@ -9,77 +9,78 @@ export declare class ApprovalService {
     createRule(data: {
         buyerOrgId: string;
         minAmount: number;
+        currency: string;
         role: string;
     }): Promise<{
         id: string;
-        createdAt: Date;
-        role: string;
-        buyerOrgId: string;
         minAmount: number;
+        role: string;
+        createdAt: Date;
+        buyerOrgId: string;
     }>;
     getRules(orgId: string): Promise<{
         id: string;
-        createdAt: Date;
-        role: string;
-        buyerOrgId: string;
         minAmount: number;
+        role: string;
+        createdAt: Date;
+        buyerOrgId: string;
     }[]>;
-    evaluatePORules(poId: string, totalAmount: number, orgId: string): Promise<{
+    evaluatePORules(poId: string, totalAmount: number, orgId: string, currency?: string): Promise<{
         required: boolean;
     }>;
     getPendingRequests(orgId: string): Promise<({
         id: string;
         createdAt: Date;
-        status: import(".prisma/client").$Enums.ApprovalStatus;
         buyerOrgId: string;
         entityId: string;
         entityType: import(".prisma/client").$Enums.ApprovalEntity;
+        status: import(".prisma/client").$Enums.ApprovalStatus;
         approvedById: string | null;
     } | {
         purchaseOrder: {
             supplier: {
                 id: string;
-                name: string;
                 createdAt: Date;
-                email: string;
-                status: import(".prisma/client").$Enums.SupplierStatus;
                 buyerOrgId: string;
+                name: string;
+                status: import(".prisma/client").$Enums.SupplierStatus;
+                email: string;
             };
         } & {
             id: string;
             createdAt: Date;
-            status: import(".prisma/client").$Enums.POStatus;
-            notes: string | null;
             buyerOrgId: string;
-            rfqId: string | null;
-            supplierId: string;
-            totalAmount: number;
+            status: import(".prisma/client").$Enums.POStatus;
             quoteId: string | null;
+            supplierId: string;
+            rfqId: string | null;
+            totalAmount: number;
+            notes: string | null;
         };
         id: string;
         createdAt: Date;
-        status: import(".prisma/client").$Enums.ApprovalStatus;
         buyerOrgId: string;
         entityId: string;
         entityType: import(".prisma/client").$Enums.ApprovalEntity;
+        status: import(".prisma/client").$Enums.ApprovalStatus;
         approvedById: string | null;
     })[]>;
     approveRequest(requestId: string, userId: string): Promise<{
         id: string;
         createdAt: Date;
-        status: import(".prisma/client").$Enums.ApprovalStatus;
         buyerOrgId: string;
         entityId: string;
         entityType: import(".prisma/client").$Enums.ApprovalEntity;
+        status: import(".prisma/client").$Enums.ApprovalStatus;
         approvedById: string | null;
     }>;
     rejectRequest(requestId: string, userId: string): Promise<{
         id: string;
         createdAt: Date;
-        status: import(".prisma/client").$Enums.ApprovalStatus;
         buyerOrgId: string;
         entityId: string;
         entityType: import(".prisma/client").$Enums.ApprovalEntity;
+        status: import(".prisma/client").$Enums.ApprovalStatus;
         approvedById: string | null;
     }>;
 }

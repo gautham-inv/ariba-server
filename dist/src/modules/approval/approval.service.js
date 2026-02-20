@@ -25,6 +25,7 @@ let ApprovalService = class ApprovalService {
             data: {
                 buyerOrgId: data.buyerOrgId,
                 minAmount: data.minAmount,
+                currency: data.currency,
                 role: data.role,
             },
         });
@@ -34,10 +35,11 @@ let ApprovalService = class ApprovalService {
             where: { buyerOrgId: orgId },
         });
     }
-    async evaluatePORules(poId, totalAmount, orgId) {
+    async evaluatePORules(poId, totalAmount, orgId, currency = 'USD') {
         const applicableRules = await this.prisma.approvalRule.findMany({
             where: {
                 buyerOrgId: orgId,
+                currency,
                 minAmount: { lte: totalAmount },
             },
         });
@@ -105,7 +107,7 @@ let ApprovalService = class ApprovalService {
                     supplierName: po.supplier.name,
                     poId: po.id,
                     totalAmount: po.totalAmount,
-                    currency: 'USD',
+                    currency: po.currency || 'USD',
                     organizationName: po.buyerOrg.name,
                     notes: po.notes || undefined,
                 });
